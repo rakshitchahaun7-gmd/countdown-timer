@@ -157,15 +157,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let tmInterval, tmRemaining = 0, tmTotal = 0, tmRunning = false, tmHasChimed = false;
 
+    function syncTimerInputs() {
+        if (tmRunning) return;
+        let h = parseInt(tmInpH.value) || 0; let m = parseInt(tmInpM.value) || 0; let s = parseInt(tmInpS.value) || 0;
+        tmRemaining = h * 3600 + m * 60 + s; tmTotal = tmRemaining;
+        updateTimerUI(tmRemaining);
+    }
+    tmInpH.addEventListener('input', syncTimerInputs);
+    tmInpM.addEventListener('input', syncTimerInputs);
+    tmInpS.addEventListener('input', syncTimerInputs);
+
     document.getElementById('tm-start-btn').addEventListener('click', () => {
         if (!tmRunning) {
-            if (tmRemaining <= 0) {
-                let h = parseInt(tmInpH.value) || 0; let m = parseInt(tmInpM.value) || 0; let s = parseInt(tmInpS.value) || 0;
-                tmRemaining = h * 3600 + m * 60 + s; tmTotal = tmRemaining;
-            }
+            if (tmRemaining <= 0) syncTimerInputs();
             if (tmRemaining > 0) {
                 tmRunning = true; tmHasChimed = false;
                 document.querySelector('#timer-view .timer-display').classList.remove('timer-complete');
+                updateTimerUI(tmRemaining);
                 tmInterval = setInterval(updateTimerMode, 1000);
                 chimeSound.volume = 0.8; chimeSound.play().then(() => chimeSound.pause()).catch(e => {});
             }
@@ -175,8 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tm-pause-btn').addEventListener('click', () => { tmRunning = false; clearInterval(tmInterval); });
 
     document.getElementById('tm-reset-btn').addEventListener('click', () => {
-        tmRunning = false; clearInterval(tmInterval); tmRemaining = 0;
-        updateTimerUI(0); progressBar.style.width = '0%';
+        tmRunning = false; clearInterval(tmInterval);
+        syncTimerInputs();
+        progressBar.style.width = '0%';
         document.querySelector('#timer-view .timer-display').classList.remove('timer-complete');
     });
 
