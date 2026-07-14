@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Countdown Timer</title>
+    <meta name="description" content="A beautiful, premium countdown timer to track your most important events.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    
+    <main class="container">
+        <header>
+            <h1 class="title">Next Big Event</h1>
+            <p class="subtitle">Counting down to the spectacular moment</p>
+        </header>
+
+        <div class="timer-card">
+            <div class="time-section">
+                <div class="time-value" id="days">00</div>
+                <div class="time-label">Days</div>
+            </div>
+            <div class="separator">:</div>
+            <div class="time-section">
+                <div class="time-value" id="hours">00</div>
+                <div class="time-label">Hours</div>
+            </div>
+            <div class="separator">:</div>
+            <div class="time-section">
+                <div class="time-value" id="minutes">00</div>
+                <div class="time-label">Minutes</div>
+            </div>
+            <div class="separator">:</div>
+            <div class="time-section">
+                <div class="time-value" id="seconds">00</div>
+                <div class="time-label">Seconds</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="input-group">
+                <label for="event-date">Set Event Date:</label>
+                <input type="datetime-local" id="event-date" class="date-input">
+            </div>
+            <button id="start-btn" class="primary-btn">Start Countdown</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
