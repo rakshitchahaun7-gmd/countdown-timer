@@ -43,6 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
             startTime = new Date().getTime(); // Reset progress
             hasChimed = false;
             startCountdown();
+            
+            // Unlock audio context for the completion chime
+            chimeSound.volume = 0.8;
+            chimeSound.play().then(() => chimeSound.pause()).catch(e => {});
         }
     });
 
@@ -68,7 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(countdownInterval);
             setTimerValues(0, 0, 0, 0);
             progressBar.style.width = '100%';
-            if (isSoundEnabled && !hasChimed) {
+            if (!hasChimed) {
+                chimeSound.currentTime = 0;
+                chimeSound.volume = 1.0;
                 chimeSound.play().catch(e => console.log('Audio play failed:', e));
                 hasChimed = true;
             }
