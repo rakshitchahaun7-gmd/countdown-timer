@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             cdStart = Date.now();
             hasChimed = false;
+            document.querySelector('#countdown-view .timer-display').classList.remove('timer-complete');
             startCountdown();
             chimeSound.volume = 0.8;
             chimeSound.play().then(() => chimeSound.pause()).catch(e => {});
@@ -127,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             animateValue(cdEls.days, "00"); animateValue(cdEls.hours, "00");
             animateValue(cdEls.minutes, "00"); animateValue(cdEls.seconds, "00");
             progressBar.style.width = '100%';
+            document.querySelector('#countdown-view .timer-display').classList.add('timer-complete');
             if (!hasChimed) {
                 chimeSound.currentTime = 0; chimeSound.volume = 1.0;
                 chimeSound.play().catch(e => {});

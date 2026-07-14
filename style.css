@@ -223,3 +223,39 @@ body {
     .controls-panel { opacity: 1; position: relative; margin-top: 5vh; bottom: auto; }
     .nav-dock { bottom: 10px; width: 95%; overflow-x: auto; white-space: nowrap; }
 }
+
+/* Completion Animation */
+.completion-message {
+    position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 3vw; font-weight: 700; letter-spacing: 1em;
+    color: var(--text-primary); text-shadow: 0 0 20px var(--text-primary);
+    opacity: 0; pointer-events: none; transition: opacity 2s ease, top 2s ease;
+    z-index: 100;
+}
+
+.timer-complete .number {
+    color: var(--accent);
+    text-shadow: 0 0 50px var(--accent);
+    animation: pulseGlow 2s infinite alternate;
+}
+
+.timer-complete .colon { color: var(--accent); opacity: 1; text-shadow: 0 0 30px var(--accent); }
+.timer-complete ~ .completion-message { opacity: 1; top: 70%; }
+
+@keyframes pulseGlow {
+    0% { transform: scale(1); text-shadow: 0 0 30px var(--accent); }
+    100% { transform: scale(1.05); text-shadow: 0 0 80px var(--accent), 0 0 120px var(--accent); }
+}
+
+/* Expanding Ripple Overlay */
+.ripple-overlay {
+    position: fixed; top: 50%; left: 50%; width: 10px; height: 10px;
+    background: transparent; border: 2px solid var(--accent); border-radius: 50%;
+    transform: translate(-50%, -50%); opacity: 0; pointer-events: none; z-index: 10;
+}
+.timer-complete ~ .ripple-overlay { animation: massiveRipple 3s ease-out forwards; }
+
+@keyframes massiveRipple {
+    0% { width: 0px; height: 0px; opacity: 1; border-width: 10px; }
+    100% { width: 200vw; height: 200vw; opacity: 0; border-width: 1px; }
+}
