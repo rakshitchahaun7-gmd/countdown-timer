@@ -91,10 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const bgUrl = urlParams.get('bg');
         if (bgUrl === 'green') {
-            document.body.style.backgroundColor = '#00FF00';
+            document.body.style.setProperty('background-color', '#00FF00', 'important');
             document.body.style.backgroundImage = 'none';
         } else if (bgUrl) {
+            document.body.style.setProperty('background-color', 'transparent', 'important');
             document.body.style.backgroundImage = `url("${bgUrl}")`;
+        } else {
+            document.body.style.setProperty('background-color', 'transparent', 'important');
+            document.body.style.backgroundImage = 'none';
         }
 
         const textColor = urlParams.get('color');
