@@ -27,6 +27,7 @@
     --control-bg: rgba(255, 255, 255, 0.1);
     --mesh-color-1: #302b63;
     --mesh-color-2: #24243e;
+}
 .theme-ruby {
     --bg-primary: #0a0202;
     --text-primary: #ffffff;
