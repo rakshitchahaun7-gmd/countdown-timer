@@ -24,11 +24,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const animBtn = document.getElementById('anim-btn');
+    const animDropdown = document.getElementById('anim-dropdown');
+    const animOptions = document.querySelectorAll('.anim-option');
+
+    let currentTheme = 'theme-obsidian';
+    let currentAnim = 'anim-snap';
+
+    function updateBodyClass() {
+        // Keep launch/stream mode if active
+        let baseClasses = '';
+        if (document.body.classList.contains('launch-mode')) baseClasses += 'launch-mode ';
+        if (document.body.classList.contains('stream-mode')) baseClasses += 'stream-mode ';
+        document.body.className = baseClasses + `${currentTheme} ${currentAnim}`;
+    }
+
     themeBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); themeDropdown.classList.toggle('show');
+        e.stopPropagation(); 
+        themeDropdown.classList.toggle('show');
+        if(animDropdown) animDropdown.classList.remove('show');
     });
-    document.addEventListener('click', () => themeDropdown.classList.remove('show'));
-    themeOptions.forEach(opt => opt.addEventListener('click', () => document.body.className = opt.dataset.theme));
+    if(animBtn) {
+        animBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            animDropdown.classList.toggle('show');
+            themeDropdown.classList.remove('show');
+        });
+    }
+
+    document.addEventListener('click', () => {
+        themeDropdown.classList.remove('show');
+        if(animDropdown) animDropdown.classList.remove('show');
+    });
+
+    themeOptions.forEach(opt => opt.addEventListener('click', () => {
+        currentTheme = opt.dataset.theme;
+        updateBodyClass();
+    }));
+    
+    if(animOptions) {
+        animOptions.forEach(opt => opt.addEventListener('click', () => {
+            currentAnim = opt.dataset.anim;
+            updateBodyClass();
+        }));
+    }
 
     function playTick() {
         if (isSoundEnabled) {
@@ -85,6 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const isLaunchMode = urlParams.get('mode') === 'launch';
     const isStreamMode = urlParams.get('mode') === 'stream';
+    
+    if (urlParams.get('theme')) currentTheme = urlParams.get('theme');
+    if (urlParams.get('anim')) currentAnim = urlParams.get('anim');
+    updateBodyClass();
 
     if (isStreamMode) {
         document.body.classList.add('stream-mode');
@@ -115,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         startCountdown();
     } else if (isLaunchMode) {
         document.body.classList.add('launch-mode');
-        if (urlParams.get('theme')) document.body.className = urlParams.get('theme') + ' launch-mode';
         
         document.getElementById('landing-title').innerText = urlParams.get('title') || 'WE ARE LAUNCHING';
         document.getElementById('landing-desc').innerText = urlParams.get('desc') || '';
@@ -343,7 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (title) url.searchParams.set('title', title);
         if (desc) url.searchParams.set('desc', desc);
         url.searchParams.set('time', targetTime);
-        url.searchParams.set('theme', theme);
+        url.searchParams.set('theme', currentTheme);
+        url.searchParams.set('anim', currentAnim);
         
         document.getElementById('lb-result-url').value = url.toString();
         document.getElementById('lb-result-group').style.display = 'block';
@@ -386,6 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (color && color !== 'default') url.searchParams.set('color', color);
         
         url.searchParams.set('time', targetTime);
+        url.searchParams.set('anim', currentAnim);
         
         document.getElementById('so-result-url').value = url.toString();
         document.getElementById('so-result-group').style.display = 'block';

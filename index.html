@@ -8,9 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=5">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
-<body class="theme-obsidian">
+<body class="theme-obsidian anim-snap">
     <div class="progress-container">
         <div class="progress-bar" id="progress-bar"></div>
     </div>
@@ -24,6 +25,9 @@
         <button id="theme-btn" class="menu-btn" title="Change Theme">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         </button>
+        <button id="anim-btn" class="menu-btn" title="Change Animation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </button>
         <button id="sound-btn" class="menu-btn muted" title="Toggle Sound">
             <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
             <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
@@ -34,6 +38,17 @@
         <div class="theme-option" data-theme="theme-obsidian">Obsidian</div>
         <div class="theme-option" data-theme="theme-nebula">Nebula</div>
         <div class="theme-option" data-theme="theme-glass">Frosted Glass</div>
+        <div class="theme-option" data-theme="theme-ruby">Ruby</div>
+        <div class="theme-option" data-theme="theme-emerald">Emerald</div>
+        <div class="theme-option" data-theme="theme-gold">Gold</div>
+        <div class="theme-option" data-theme="theme-cyberpunk">Cyberpunk</div>
+    </div>
+
+    <div class="theme-dropdown" id="anim-dropdown" style="top: 130px;">
+        <div class="anim-option" data-anim="anim-snap">Snap 3D (Default)</div>
+        <div class="anim-option" data-anim="anim-flip">Classic Flip</div>
+        <div class="anim-option" data-anim="anim-roll">Smooth Roll</div>
+        <div class="anim-option" data-anim="anim-glitch">Cyber Glitch</div>
     </div>
 
     <!-- Navigation Dock -->
@@ -313,6 +328,6 @@
     <audio id="chime-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-glass-bowl-chime-3140.mp3" preload="auto"></audio>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>
