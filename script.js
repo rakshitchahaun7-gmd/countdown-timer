@@ -1,81 +1,135 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const els = {
-        days: document.getElementById('days'),
-        hours: document.getElementById('hours'),
-        minutes: document.getElementById('minutes'),
-        seconds: document.getElementById('seconds')
-    };
-    
-    const dateInput = document.getElementById('event-date');
-    const startBtn = document.getElementById('start-btn');
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    // Shared Elements
     const container = document.getElementById('fullscreen-container');
-    const controlsPanel = document.querySelector('.controls-panel');
     const progressBar = document.getElementById('progress-bar');
-    
     const themeBtn = document.getElementById('theme-btn');
     const themeDropdown = document.getElementById('theme-dropdown');
     const themeOptions = document.querySelectorAll('.theme-option');
     const soundBtn = document.getElementById('sound-btn');
-    
     const tickSound = document.getElementById('tick-sound');
     const chimeSound = document.getElementById('chime-sound');
-    
-    let countdownInterval;
-    let targetTime = 0;
-    let startTime = new Date().getTime();
+    const fullscreenBtns = document.querySelectorAll('#fullscreen-btn');
+
     let isSoundEnabled = false;
-    let hasChimed = false;
-    
-    // Initialize Default Date
-    const defaultDate = new Date();
-    defaultDate.setDate(defaultDate.getDate() + 1);
-    defaultDate.setHours(0, 0, 0, 0);
-    dateInput.value = new Date(defaultDate.getTime() - defaultDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    targetTime = defaultDate.getTime();
-    
+
+    // --- SOUND & THEME ---
+    soundBtn.addEventListener('click', () => {
+        isSoundEnabled = !isSoundEnabled;
+        soundBtn.classList.toggle('muted', !isSoundEnabled);
+        document.querySelector('.icon-muted').style.display = isSoundEnabled ? 'none' : 'block';
+        document.querySelector('.icon-unmuted').style.display = isSoundEnabled ? 'block' : 'none';
+        if (isSoundEnabled) {
+            tickSound.volume = 0.5; chimeSound.volume = 0.8;
+            tickSound.play().then(() => tickSound.pause()).catch(e => {});
+        }
+    });
+
+    themeBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); themeDropdown.classList.toggle('show');
+    });
+    document.addEventListener('click', () => themeDropdown.classList.remove('show'));
+    themeOptions.forEach(opt => opt.addEventListener('click', () => document.body.className = opt.dataset.theme));
+
+    function playTick() {
+        if (isSoundEnabled) {
+            tickSound.currentTime = 0;
+            tickSound.play().catch(e => {});
+        }
+    }
+
+    // --- ANIMATION UTILS ---
+    function animateValue(el, newValue) {
+        if (el.innerText === newValue) return;
+        el.classList.add('slide-up');
+        setTimeout(() => {
+            el.innerText = newValue;
+            el.classList.remove('slide-up');
+            el.classList.add('slide-down');
+            void el.offsetWidth; // Force reflow
+            el.classList.remove('slide-down');
+        }, 200);
+    }
+    function formatTime(time) { return time < 10 ? `0${time}` : String(time); }
+
+    // --- NAVIGATION DOCK & GUIDE ---
+    const navBtns = document.querySelectorAll('.nav-btn[data-target]');
+    const views = document.querySelectorAll('.view-layer');
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            navBtns.forEach(b => b.classList.remove('active'));
+            views.forEach(v => v.classList.remove('active-view'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.target).classList.add('active-view');
+        });
+    });
+
+    const guideBtn = document.getElementById('guide-btn');
+    const guideModal = document.getElementById('guide-modal');
+    const closeGuideBtn = document.getElementById('close-guide-btn');
+    guideBtn.addEventListener('click', () => guideModal.classList.add('show'));
+    closeGuideBtn.addEventListener('click', () => guideModal.classList.remove('show'));
+    guideModal.addEventListener('click', (e) => { if(e.target === guideModal) guideModal.classList.remove('show'); });
+
+
+    // --- COUNTDOWN LOGIC ---
+    const cdEls = {
+        days: document.getElementById('cd-days'), hours: document.getElementById('cd-hours'),
+        minutes: document.getElementById('cd-minutes'), seconds: document.getElementById('cd-seconds')
+    };
+    const dateInput = document.getElementById('event-date');
+    const tzInput = document.getElementById('event-tz');
+    const startCdBtn = document.getElementById('start-cd-btn');
+    let cdInterval, cdTarget = 0, cdStart = Date.now(), hasChimed = false;
+
+    // Set Default Date
+    const defDate = new Date(); defDate.setDate(defDate.getDate() + 1); defDate.setHours(0,0,0,0);
+    dateInput.value = new Date(defDate.getTime() - defDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    cdTarget = defDate.getTime();
     startCountdown();
 
-    startBtn.addEventListener('click', () => {
-        const inputTime = new Date(dateInput.value).getTime();
-        if (!isNaN(inputTime)) {
-            targetTime = inputTime;
-            startTime = new Date().getTime(); // Reset progress
+    startCdBtn.addEventListener('click', () => {
+        // Parse time with timezone
+        const inputVal = dateInput.value;
+        const tz = tzInput.value;
+        if (inputVal) {
+            if (tz === 'local') {
+                cdTarget = new Date(inputVal).getTime();
+            } else {
+                cdTarget = moment.tz(inputVal, tz).valueOf();
+            }
+            cdStart = Date.now();
             hasChimed = false;
             startCountdown();
-            
-            // Unlock audio context for the completion chime
             chimeSound.volume = 0.8;
             chimeSound.play().then(() => chimeSound.pause()).catch(e => {});
         }
     });
 
     function startCountdown() {
-        if (countdownInterval) clearInterval(countdownInterval);
-        updateTimer();
-        countdownInterval = setInterval(updateTimer, 1000);
+        if (cdInterval) clearInterval(cdInterval);
+        updateCountdown();
+        cdInterval = setInterval(updateCountdown, 1000);
     }
 
-    function updateTimer() {
-        const now = new Date().getTime();
-        const distance = targetTime - now;
-
-        // Progress Bar Calculation
-        const totalDuration = targetTime - startTime;
-        if (totalDuration > 0) {
-            let progress = ((now - startTime) / totalDuration) * 100;
-            if (progress > 100) progress = 100;
-            progressBar.style.width = `${progress}%`;
+    function updateCountdown() {
+        if(!document.getElementById('countdown-view').classList.contains('active-view')) return;
+        
+        const now = Date.now();
+        const distance = cdTarget - now;
+        
+        if (cdTarget - cdStart > 0) {
+            let prog = ((now - cdStart) / (cdTarget - cdStart)) * 100;
+            progressBar.style.width = `${Math.min(prog, 100)}%`;
         }
 
         if (distance <= 0) {
-            clearInterval(countdownInterval);
-            setTimerValues(0, 0, 0, 0);
+            clearInterval(cdInterval);
+            animateValue(cdEls.days, "00"); animateValue(cdEls.hours, "00");
+            animateValue(cdEls.minutes, "00"); animateValue(cdEls.seconds, "00");
             progressBar.style.width = '100%';
             if (!hasChimed) {
-                chimeSound.currentTime = 0;
-                chimeSound.volume = 1.0;
-                chimeSound.play().catch(e => console.log('Audio play failed:', e));
+                chimeSound.currentTime = 0; chimeSound.volume = 1.0;
+                chimeSound.play().catch(e => {});
                 hasChimed = true;
             }
             return;
@@ -86,107 +140,103 @@ document.addEventListener('DOMContentLoaded', () => {
         const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((distance % (1000 * 60)) / 1000);
 
-        setTimerValues(d, h, m, s);
+        animateValue(cdEls.days, formatTime(d)); animateValue(cdEls.hours, formatTime(h));
+        animateValue(cdEls.minutes, formatTime(m)); 
+        const oldS = cdEls.seconds.innerText;
+        const newS = formatTime(s);
+        if (oldS !== newS) { animateValue(cdEls.seconds, newS); playTick(); }
     }
 
-    function setTimerValues(d, h, m, s) {
-        animateValue(els.days, formatTime(d));
-        animateValue(els.hours, formatTime(h));
-        animateValue(els.minutes, formatTime(m));
+    // --- STOPWATCH LOGIC ---
+    const swEls = { min: document.getElementById('sw-minutes'), sec: document.getElementById('sw-seconds'), ms: document.getElementById('sw-ms') };
+    const swStartBtn = document.getElementById('sw-start-btn');
+    const swPauseBtn = document.getElementById('sw-pause-btn');
+    const swResetBtn = document.getElementById('sw-reset-btn');
+    
+    let swInterval;
+    let swTime = 0;
+    let swRunning = false;
+    let swLastUpdate = 0;
+
+    swStartBtn.addEventListener('click', () => {
+        if (!swRunning) {
+            swRunning = true;
+            swLastUpdate = Date.now();
+            swInterval = requestAnimationFrame(updateStopwatch);
+            progressBar.style.width = '0%';
+        }
+    });
+
+    swPauseBtn.addEventListener('click', () => { swRunning = false; cancelAnimationFrame(swInterval); });
+
+    swResetBtn.addEventListener('click', () => {
+        swRunning = false;
+        cancelAnimationFrame(swInterval);
+        swTime = 0;
+        swEls.min.innerText = "00"; swEls.sec.innerText = "00"; swEls.ms.innerText = "00";
+    });
+
+    function updateStopwatch() {
+        if (!swRunning) return;
+        const now = Date.now();
+        swTime += (now - swLastUpdate);
+        swLastUpdate = now;
+
+        const m = Math.floor(swTime / 60000);
+        const s = Math.floor((swTime % 60000) / 1000);
+        const ms = Math.floor((swTime % 1000) / 10); // 2 digits for MS
+
+        swEls.min.innerText = formatTime(m);
         
-        const oldSec = els.seconds.innerText;
         const newSec = formatTime(s);
-        if (oldSec !== newSec) {
-            animateValue(els.seconds, newSec);
-            if (isSoundEnabled) {
-                tickSound.currentTime = 0;
-                tickSound.play().catch(e => console.log('Audio play failed:', e));
-            }
+        if(swEls.sec.innerText !== newSec) {
+            animateValue(swEls.sec, newSec);
+            playTick();
         }
+        
+        swEls.ms.innerText = formatTime(ms);
+        swInterval = requestAnimationFrame(updateStopwatch);
     }
 
-    function formatTime(time) {
-        return time < 10 ? `0${time}` : String(time);
-    }
+    // --- CLOCK LOGIC ---
+    const ckEls = { h: document.getElementById('ck-hours'), m: document.getElementById('ck-minutes'), s: document.getElementById('ck-seconds'), ampm: document.getElementById('ck-ampm') };
+    const clockTz = document.getElementById('clock-tz');
+    
+    setInterval(updateClock, 1000);
+    updateClock();
 
-    function animateValue(el, newValue) {
-        if (el.innerText === newValue) return;
-        
-        el.classList.add('slide-up');
-        
-        setTimeout(() => {
-            el.innerText = newValue;
-            el.classList.remove('slide-up');
-            el.classList.add('slide-down');
-            
-            // Force reflow
-            void el.offsetWidth;
-            
-            el.classList.remove('slide-down');
-        }, 200); // Wait half of the transition duration
-    }
-
-    // Sound Toggle
-    soundBtn.addEventListener('click', () => {
-        isSoundEnabled = !isSoundEnabled;
-        soundBtn.classList.toggle('muted', !isSoundEnabled);
-        document.querySelector('.icon-muted').style.display = isSoundEnabled ? 'none' : 'block';
-        document.querySelector('.icon-unmuted').style.display = isSoundEnabled ? 'block' : 'none';
-        
-        // Trick to unlock audio on iOS/Safari by playing a silent sound on click
-        if (isSoundEnabled) {
-            tickSound.volume = 0.5;
-            chimeSound.volume = 0.8;
-            tickSound.play().then(() => tickSound.pause()).catch(e => {});
+    function updateClock() {
+        if(!document.getElementById('clock-view').classList.contains('active-view')) return;
+        const tz = clockTz.value;
+        let now;
+        if (tz === 'local') {
+            now = moment();
+        } else {
+            now = moment.tz(tz);
         }
-    });
 
-    // Theme Logic
-    themeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        themeDropdown.classList.toggle('show');
-    });
+        let h = now.format('hh');
+        let m = now.format('mm');
+        let s = now.format('ss');
+        let ampm = now.format('A');
 
-    document.addEventListener('click', () => {
-        themeDropdown.classList.remove('show');
-    });
+        animateValue(ckEls.h, h);
+        animateValue(ckEls.m, m);
+        const oldS = ckEls.s.innerText;
+        if (oldS !== s) { animateValue(ckEls.s, s); playTick(); }
+        ckEls.ampm.innerText = ampm;
+    }
 
-    themeOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            document.body.className = option.dataset.theme;
-        });
-    });
-
-    // Fullscreen Logic
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-
+    // --- FULLSCREEN LOGIC ---
+    fullscreenBtns.forEach(btn => btn.addEventListener('click', toggleFullscreen));
     document.addEventListener('keydown', (e) => {
-        if (e.key.toLowerCase() === 'f' && document.activeElement !== dateInput) {
+        if (e.key.toLowerCase() === 'f' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
             toggleFullscreen();
         }
     });
 
     function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            container.requestFullscreen().catch(err => console.error(err));
-        } else {
-            document.exitFullscreen();
-        }
+        if (!document.fullscreenElement) { container.requestFullscreen().catch(e => {}); }
+        else { document.exitFullscreen(); }
     }
-
-    // Auto-hide controls
-    let hideTimeout;
-    const resetHideTimeout = () => {
-        controlsPanel.classList.add('force-show');
-        clearTimeout(hideTimeout);
-        hideTimeout = setTimeout(() => {
-            if (document.activeElement !== dateInput) {
-                controlsPanel.classList.remove('force-show');
-            }
-        }, 3000);
-    };
-
-    document.addEventListener('mousemove', resetHideTimeout);
-    document.addEventListener('keydown', resetHideTimeout);
-    resetHideTimeout();
 });

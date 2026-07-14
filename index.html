@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body class="theme-obsidian">
     <div class="progress-container">
@@ -36,45 +36,153 @@
         <div class="theme-option" data-theme="theme-glass">Frosted Glass</div>
     </div>
 
+    <!-- Navigation Dock -->
+    <div class="nav-dock">
+        <button class="nav-btn active" data-target="countdown-view">Countdown</button>
+        <button class="nav-btn" data-target="stopwatch-view">Stopwatch</button>
+        <button class="nav-btn" data-target="clock-view">Clock</button>
+        <button class="nav-btn" id="guide-btn">Guide</button>
+    </div>
+
     <div class="fullscreen-container" id="fullscreen-container">
-        <div class="timer-display">
-            <div class="time-block">
-                <div class="digit-container"><span class="number" id="days">00</span></div>
-                <span class="label">Days</span>
+        
+        <!-- COUNTDOWN VIEW -->
+        <div class="view-layer active-view" id="countdown-view">
+            <div class="timer-display">
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="cd-days">00</span></div>
+                    <span class="label">Days</span>
+                </div>
+                <div class="colon">:</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="cd-hours">00</span></div>
+                    <span class="label">Hours</span>
+                </div>
+                <div class="colon">:</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="cd-minutes">00</span></div>
+                    <span class="label">Minutes</span>
+                </div>
+                <div class="colon">:</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="cd-seconds">00</span></div>
+                    <span class="label">Seconds</span>
+                </div>
             </div>
-            <div class="colon">:</div>
-            <div class="time-block">
-                <div class="digit-container"><span class="number" id="hours">00</span></div>
-                <span class="label">Hours</span>
-            </div>
-            <div class="colon">:</div>
-            <div class="time-block">
-                <div class="digit-container"><span class="number" id="minutes">00</span></div>
-                <span class="label">Minutes</span>
-            </div>
-            <div class="colon">:</div>
-            <div class="time-block">
-                <div class="digit-container"><span class="number" id="seconds">00</span></div>
-                <span class="label">Seconds</span>
+
+            <div class="controls-panel">
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="event-date">Target Date:</label>
+                        <input type="datetime-local" id="event-date" class="control-input">
+                    </div>
+                    <div class="input-group">
+                        <label for="event-tz">Time Zone:</label>
+                        <select id="event-tz" class="control-input">
+                            <option value="local">Local Time</option>
+                            <option value="UTC">UTC</option>
+                            <option value="America/New_York">New York (EST/EDT)</option>
+                            <option value="Europe/London">London (GMT/BST)</option>
+                            <option value="Asia/Tokyo">Tokyo (JST)</option>
+                            <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="start-cd-btn" class="btn primary">Start</button>
+                    <button id="fullscreen-btn" class="btn secondary">Fullscreen [F]</button>
+                </div>
             </div>
         </div>
 
-        <div class="controls-panel">
-            <div class="input-section">
-                <label for="event-date">Target Date:</label>
-                <input type="datetime-local" id="event-date" class="control-input">
+        <!-- STOPWATCH VIEW -->
+        <div class="view-layer" id="stopwatch-view">
+            <div class="timer-display">
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="sw-minutes">00</span></div>
+                    <span class="label">Minutes</span>
+                </div>
+                <div class="colon">:</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="sw-seconds">00</span></div>
+                    <span class="label">Seconds</span>
+                </div>
+                <div class="colon">.</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="sw-ms">00</span></div>
+                    <span class="label">MS</span>
+                </div>
             </div>
-            <div class="button-group">
-                <button id="start-btn" class="btn primary">Start</button>
-                <button id="fullscreen-btn" class="btn secondary">Fullscreen [F]</button>
+            <div class="controls-panel">
+                <div class="button-group">
+                    <button id="sw-start-btn" class="btn primary">Start</button>
+                    <button id="sw-pause-btn" class="btn secondary">Pause</button>
+                    <button id="sw-reset-btn" class="btn secondary">Reset</button>
+                </div>
+                <div class="lap-container" id="lap-container"></div>
+            </div>
+        </div>
+
+        <!-- CLOCK VIEW -->
+        <div class="view-layer" id="clock-view">
+            <div class="timer-display">
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="ck-hours">00</span></div>
+                    <span class="label" id="ck-ampm">AM</span>
+                </div>
+                <div class="colon">:</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="ck-minutes">00</span></div>
+                    <span class="label">Minutes</span>
+                </div>
+                <div class="colon">:</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="ck-seconds">00</span></div>
+                    <span class="label">Seconds</span>
+                </div>
+            </div>
+            <div class="controls-panel">
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="clock-tz">Clock Time Zone:</label>
+                        <select id="clock-tz" class="control-input">
+                            <option value="local">Local Time</option>
+                            <option value="UTC">UTC</option>
+                            <option value="America/New_York">New York</option>
+                            <option value="Europe/London">London</option>
+                            <option value="Asia/Tokyo">Tokyo</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Audio Elements -->
+    <!-- Guide Modal -->
+    <div class="modal-overlay" id="guide-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-guide-btn">&times;</button>
+            <h2>The Complete Countdown Timer Guide for Real Life</h2>
+            <div class="guide-body">
+                <h3>1. The Pomodoro Technique (Deep Work)</h3>
+                <p>Use the <strong>Stopwatch</strong> or Countdown to focus. Work for 25 minutes completely uninterrupted, then take a 5-minute break. This prevents burnout and massively increases productivity.</p>
+                
+                <h3>2. Tracking Major Life Events</h3>
+                <p>Set the <strong>Countdown</strong> to a highly anticipated event like a wedding, graduation, or a product launch. Select the exact <strong>Time Zone</strong> of the event destination to ensure it hits zero at the precise local moment, no matter where you are traveling from.</p>
+
+                <h3>3. Presentation & Speech Pacing</h3>
+                <p>If you have a 10-minute speech, start a 10-minute Countdown. Keep it in your peripheral vision (using <strong>Frosted Glass</strong> theme for high contrast). Seeing the physical numbers tick down prevents you from rambling and forces you to hit your key points on time.</p>
+
+                <h3>4. High-Intensity Interval Training (HIIT)</h3>
+                <p>Use the <strong>Stopwatch</strong> to track your resting periods exactly. A 60-second precise rest between heavy lifting sets optimizes muscle recovery better than guessing.</p>
+            </div>
+        </div>
+    </div>
+
     <audio id="tick-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-tick-tock-clock-timer-1045.mp3" preload="auto"></audio>
     <audio id="chime-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-glass-bowl-chime-3140.mp3" preload="auto"></audio>
-
-    <script src="script.js?v=2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
+    <script src="script.js?v=4"></script>
 </body>
 </html>
