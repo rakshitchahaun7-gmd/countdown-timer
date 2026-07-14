@@ -1,14 +1,9 @@
 :root {
-    --bg-color: #0f172a;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --glass-bg: rgba(30, 41, 59, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --primary-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
-    --orb-1: #3b82f6;
-    --orb-2: #8b5cf6;
-    --orb-3: #ec4899;
-    --font-main: 'Outfit', sans-serif;
+    --bg-color: #111111;
+    --text-color: #ffffff;
+    --accent: #3b82f6;
+    --font-family: 'Inter', sans-serif;
+    --control-bg: rgba(255, 255, 255, 0.1);
 }
 
 * {
@@ -18,283 +13,132 @@
 }
 
 body {
-    font-family: var(--font-main);
     background-color: var(--bg-color);
-    color: var(--text-primary);
-    min-height: 100vh;
+    color: var(--text-color);
+    font-family: var(--font-family);
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
     overflow: hidden;
+}
+
+.fullscreen-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: relative;
 }
 
-/* Background Animations */
-.background-elements {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    overflow: hidden;
-}
-
-.orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.5;
-    animation: float 20s infinite ease-in-out alternate;
-}
-
-.orb-1 {
-    width: 400px;
-    height: 400px;
-    background: var(--orb-1);
-    top: -10%;
-    left: -10%;
-    animation-delay: 0s;
-}
-
-.orb-2 {
-    width: 300px;
-    height: 300px;
-    background: var(--orb-2);
-    bottom: -10%;
-    right: -10%;
-    animation-delay: -5s;
-}
-
-.orb-3 {
-    width: 350px;
-    height: 350px;
-    background: var(--orb-3);
-    top: 40%;
-    left: 40%;
-    animation-delay: -10s;
-}
-
-@keyframes float {
-    0% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(50px, 50px) scale(1.1); }
-    100% { transform: translate(-50px, 20px) scale(0.9); }
-}
-
-/* Main Container */
-.container {
-    width: 90%;
-    max-width: 800px;
-    padding: 3rem;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    z-index: 1;
-    transform: translateY(20px);
-    opacity: 0;
-    animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeUp {
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* Header */
-header {
-    margin-bottom: 3rem;
-}
-
-.title {
-    font-size: 3.5rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    letter-spacing: -1px;
-}
-
-.subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    font-weight: 300;
-}
-
-/* Timer Card */
-.timer-card {
+.timer-display {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+    justify-content: center;
+    gap: 2vw;
+    width: 100%;
+    padding: 0 5vw;
 }
 
-.time-section {
+.time-block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 1.5rem;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    min-width: 120px;
-    box-shadow: inset 0 2px 10px rgba(255,255,255,0.02);
-    transition: transform 0.3s ease;
 }
 
-.time-section:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.time-value {
-    font-size: 4rem;
-    font-weight: 800;
+.number {
+    font-size: 15vw;
+    font-weight: 700;
     line-height: 1;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
     font-variant-numeric: tabular-nums;
-    text-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-.time-value.pop {
-    animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); color: #a78bfa; }
-    100% { transform: scale(1); }
-}
-
-.time-label {
-    font-size: 0.9rem;
+.label {
+    font-size: 2vw;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text-secondary);
-    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: #888888;
+    margin-top: 1rem;
 }
 
-.separator {
-    font-size: 4rem;
-    font-weight: 300;
-    color: var(--text-secondary);
-    opacity: 0.5;
-    animation: pulse 1s infinite alternate;
-}
-
-@keyframes pulse {
-    from { opacity: 0.2; }
-    to { opacity: 0.8; }
+.colon {
+    font-size: 12vw;
+    font-weight: 700;
+    color: #555555;
+    margin-top: -3vw; /* Align better with numbers */
 }
 
 /* Controls */
-.controls {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 1rem;
-    flex-wrap: wrap;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 1.5rem;
-    border-radius: 16px;
-}
-
-.input-group {
+.controls-panel {
+    position: absolute;
+    bottom: 10vh;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-}
-
-.input-group label {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-secondary);
-    font-weight: 600;
-}
-
-.date-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    color: var(--text-primary);
-    padding: 0.8rem 1.2rem;
-    border-radius: 8px;
-    font-family: var(--font-main);
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
-    color-scheme: dark;
-}
-
-.date-input:focus {
-    border-color: #8b5cf6;
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.primary-btn {
-    background: var(--primary-gradient);
-    color: white;
-    border: none;
-    padding: 0.8rem 2rem;
-    border-radius: 8px;
-    font-family: var(--font-main);
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 20px -10px rgba(139, 92, 246, 0.5);
-    position: relative;
-    overflow: hidden;
-}
-
-.primary-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(rgba(255,255,255,0.2), transparent);
+    align-items: center;
+    gap: 1.5rem;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-.primary-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 25px -10px rgba(139, 92, 246, 0.7);
+.controls-panel:hover,
+.controls-panel:focus-within {
+    opacity: 1 !important;
 }
 
-.primary-btn:hover::before {
-    opacity: 1;
+.input-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--control-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
 }
 
-.primary-btn:active {
-    transform: translateY(0);
+.control-input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    color-scheme: dark;
 }
 
-/* Responsive */
+.button-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    background: var(--control-bg);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.btn.primary {
+    background: var(--accent);
+}
+
+.btn.primary:hover {
+    background: #2563eb;
+}
+
 @media (max-width: 768px) {
-    .timer-card {
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-    
-    .separator {
-        display: none;
-    }
-    
-    .time-section {
-        width: calc(50% - 0.5rem);
-        min-width: unset;
-    }
-    
-    .title {
-        font-size: 2.5rem;
-    }
+    .number { font-size: 20vw; }
+    .label { font-size: 3vw; }
+    .colon { font-size: 18vw; }
+    .timer-display { flex-wrap: wrap; }
+    .controls-panel { opacity: 1; } /* Always show controls on mobile */
 }

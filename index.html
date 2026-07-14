@@ -3,56 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Countdown Timer</title>
-    <meta name="description" content="A beautiful, premium countdown timer to track your most important events.">
+    <title>Fullscreen Countdown Timer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="background-elements">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+    <div class="fullscreen-container" id="fullscreen-container">
+        
+        <div class="timer-display">
+            <div class="time-block">
+                <span class="number" id="days">00</span>
+                <span class="label">Days</span>
+            </div>
+            <div class="colon">:</div>
+            <div class="time-block">
+                <span class="number" id="hours">00</span>
+                <span class="label">Hours</span>
+            </div>
+            <div class="colon">:</div>
+            <div class="time-block">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Minutes</span>
+            </div>
+            <div class="colon">:</div>
+            <div class="time-block">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Seconds</span>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <div class="input-section">
+                <label for="event-date">Target Date:</label>
+                <input type="datetime-local" id="event-date" class="control-input">
+            </div>
+            <div class="button-group">
+                <button id="start-btn" class="btn primary">Start</button>
+                <button id="fullscreen-btn" class="btn secondary">Fullscreen [F]</button>
+            </div>
+        </div>
+
     </div>
-    
-    <main class="container">
-        <header>
-            <h1 class="title">Next Big Event</h1>
-            <p class="subtitle">Counting down to the spectacular moment</p>
-        </header>
-
-        <div class="timer-card">
-            <div class="time-section">
-                <div class="time-value" id="days">00</div>
-                <div class="time-label">Days</div>
-            </div>
-            <div class="separator">:</div>
-            <div class="time-section">
-                <div class="time-value" id="hours">00</div>
-                <div class="time-label">Hours</div>
-            </div>
-            <div class="separator">:</div>
-            <div class="time-section">
-                <div class="time-value" id="minutes">00</div>
-                <div class="time-label">Minutes</div>
-            </div>
-            <div class="separator">:</div>
-            <div class="time-section">
-                <div class="time-value" id="seconds">00</div>
-                <div class="time-label">Seconds</div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <div class="input-group">
-                <label for="event-date">Set Event Date:</label>
-                <input type="datetime-local" id="event-date" class="date-input">
-            </div>
-            <button id="start-btn" class="primary-btn">Start Countdown</button>
-        </div>
-    </main>
 
     <script src="script.js"></script>
 </body>
