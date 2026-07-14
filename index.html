@@ -42,6 +42,7 @@
         <button class="nav-btn" data-target="timer-view">Timer</button>
         <button class="nav-btn" data-target="stopwatch-view">Stopwatch</button>
         <button class="nav-btn" data-target="clock-view">Clock</button>
+        <button class="nav-btn" data-target="launch-builder-view">Launch Page</button>
         <button class="nav-btn" id="guide-btn">Guide</button>
     </div>
 
@@ -49,6 +50,13 @@
         
         <!-- COUNTDOWN VIEW -->
         <div class="view-layer active-view" id="countdown-view">
+            
+            <!-- Launch Mode Header (Hidden by default) -->
+            <div class="landing-header" id="landing-header" style="display: none;">
+                <h1 id="landing-title"></h1>
+                <p id="landing-desc"></p>
+            </div>
+
             <div class="timer-display">
                 <div class="time-block">
                     <div class="digit-container"><span class="number" id="cd-days">00</span></div>
@@ -95,6 +103,39 @@
                 <div class="button-group">
                     <button id="start-cd-btn" class="btn primary">Start</button>
                     <button id="fullscreen-btn" class="btn secondary">Fullscreen [F]</button>
+                </div>
+            </div>
+
+            <!-- Launch Mode Footer (Hidden by default) -->
+            <div class="landing-footer" id="landing-footer" style="display: none;">
+                <form class="email-signup" onsubmit="event.preventDefault(); alert('Subscribed!');">
+                    <input type="email" class="control-input" placeholder="Enter your email to get notified" required>
+                    <button type="submit" class="btn primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- LAUNCH BUILDER VIEW -->
+        <div class="view-layer" id="launch-builder-view">
+            <h2 style="color: var(--text-primary); text-align: center; margin-bottom: 2rem;">Create Landing Page</h2>
+            <div class="controls-panel" style="opacity: 1; position: relative; bottom: auto; transform: none; width: 100%; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+                <div class="input-group">
+                    <label>Event Title</label>
+                    <input type="text" id="lb-title" class="control-input" placeholder="e.g. Zenith V2 is Launching" style="width: 100%">
+                </div>
+                <div class="input-group">
+                    <label>Subtitle / Description</label>
+                    <textarea id="lb-desc" class="control-input" placeholder="e.g. Join the waitlist to get early access." style="width: 100%; height: 80px; resize: none;"></textarea>
+                </div>
+                <div class="button-group" style="justify-content: center; margin-top: 10px;">
+                    <button id="lb-generate-btn" class="btn primary">Generate URL Link</button>
+                </div>
+                <div class="input-group" id="lb-result-group" style="display: none; margin-top: 20px; border-top: 1px solid var(--control-bg); padding-top: 20px;">
+                    <label style="color: var(--accent);">Your Shareable Link:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="lb-result-url" class="control-input" style="flex: 1;" readonly>
+                        <button id="lb-copy-btn" class="btn secondary">Copy</button>
+                    </div>
                 </div>
             </div>
         </div>

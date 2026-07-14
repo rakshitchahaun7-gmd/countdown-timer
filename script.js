@@ -81,11 +81,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const startCdBtn = document.getElementById('start-cd-btn');
     let cdInterval, cdTarget = 0, cdStart = Date.now(), hasChimed = false;
 
-    // Set Default Date
-    const defDate = new Date(); defDate.setDate(defDate.getDate() + 1); defDate.setHours(0,0,0,0);
-    dateInput.value = new Date(defDate.getTime() - defDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    cdTarget = defDate.getTime();
-    startCountdown();
+    // --- URL PARSING & DEFAULT DATE ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const isLaunchMode = urlParams.get('mode') === 'launch';
+
+    if (isLaunchMode) {
+        document.body.classList.add('launch-mode');
+        if (urlParams.get('theme')) document.body.className = urlParams.get('theme') + ' launch-mode';
+        
+        document.getElementById('landing-title').innerText = urlParams.get('title') || 'WE ARE LAUNCHING';
+        document.getElementById('landing-desc').innerText = urlParams.get('desc') || '';
+        document.getElementById('landing-header').style.display = 'block';
+        document.getElementById('landing-footer').style.display = 'block';
+        
+        const launchTarget = parseInt(urlParams.get('time'));
+        if (launchTarget && !isNaN(launchTarget)) {
+            cdTarget = launchTarget;
+        } else {
+            cdTarget = Date.now() + 86400000;
+        }
+        startCountdown();
+    } else {
+        const defDate = new Date(); defDate.setDate(defDate.getDate() + 1); defDate.setHours(0,0,0,0);
+        dateInput.value = new Date(defDate.getTime() - defDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        cdTarget = defDate.getTime();
+        startCountdown();
+    }
 
     startCdBtn.addEventListener('click', () => {
         // Parse time with timezone
@@ -270,6 +291,44 @@ document.addEventListener('DOMContentLoaded', () => {
     
     setInterval(updateClock, 1000);
     updateClock();
+
+    // --- LAUNCH BUILDER LOGIC ---
+    document.getElementById('lb-generate-btn').addEventListener('click', () => {
+        const title = document.getElementById('lb-title').value;
+        const desc = document.getElementById('lb-desc').value;
+        
+        const inputVal = dateInput.value;
+        const tz = tzInput.value;
+        let targetTime = Date.now() + 86400000;
+        if (inputVal) {
+            if (tz === 'local') {
+                targetTime = new Date(inputVal).getTime();
+            } else {
+                targetTime = moment.tz(inputVal, tz).valueOf();
+            }
+        }
+        
+        const theme = document.body.className.replace('launch-mode', '').trim() || 'theme-obsidian';
+        
+        const url = new URL(window.location.href);
+        url.searchParams.set('mode', 'launch');
+        if (title) url.searchParams.set('title', title);
+        if (desc) url.searchParams.set('desc', desc);
+        url.searchParams.set('time', targetTime);
+        url.searchParams.set('theme', theme);
+        
+        document.getElementById('lb-result-url').value = url.toString();
+        document.getElementById('lb-result-group').style.display = 'block';
+    });
+
+    document.getElementById('lb-copy-btn').addEventListener('click', () => {
+        const input = document.getElementById('lb-result-url');
+        input.select();
+        document.execCommand('copy');
+        const btn = document.getElementById('lb-copy-btn');
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = 'Copy', 2000);
+    });
 
     function updateClock() {
         if(!document.getElementById('clock-view').classList.contains('active-view')) return;

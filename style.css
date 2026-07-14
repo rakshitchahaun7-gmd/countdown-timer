@@ -259,3 +259,48 @@ body {
     0% { width: 0px; height: 0px; opacity: 1; border-width: 10px; }
     100% { width: 200vw; height: 200vw; opacity: 0; border-width: 1px; }
 }
+
+/* Landing Page Elements */
+.landing-header {
+    text-align: center; margin-bottom: 30px; animation: fadeIn 1s ease-out; z-index: 5; position: relative;
+}
+.landing-header h1 {
+    font-size: clamp(2rem, 5vw, 4rem); font-weight: 700; margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--text-primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.landing-header p {
+    font-size: clamp(1rem, 2vw, 1.5rem); color: var(--text-secondary); max-width: 600px; margin: 0 auto;
+}
+
+.landing-footer {
+    margin-top: 40px; text-align: center; animation: fadeIn 1s ease-out; z-index: 5; position: relative;
+}
+.email-signup {
+    display: flex; gap: 10px; justify-content: center; max-width: 500px; margin: 0 auto;
+}
+.email-signup input {
+    flex: 1; padding: 12px 20px; font-size: 1.1rem; border-radius: 8px;
+}
+.email-signup button {
+    padding: 12px 24px; border-radius: 8px; white-space: nowrap;
+}
+
+/* Launch Mode Overrides */
+body.launch-mode .nav-dock,
+body.launch-mode .floating-menu,
+body.launch-mode .brand,
+body.launch-mode .controls-panel {
+    display: none !important;
+}
+body.launch-mode .fullscreen-container {
+    padding-top: 5vh;
+}
+body.launch-mode #countdown-view {
+    justify-content: center; padding-bottom: 5vh;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
