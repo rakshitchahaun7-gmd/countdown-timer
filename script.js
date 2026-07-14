@@ -149,6 +149,61 @@ document.addEventListener('DOMContentLoaded', () => {
         if (oldS !== newS) { animateValue(cdEls.seconds, newS); playTick(); }
     }
 
+    // --- TIMER LOGIC ---
+    const tmEls = { h: document.getElementById('tm-hours'), m: document.getElementById('tm-minutes'), s: document.getElementById('tm-seconds') };
+    const tmInpH = document.getElementById('tm-input-h');
+    const tmInpM = document.getElementById('tm-input-m');
+    const tmInpS = document.getElementById('tm-input-s');
+    
+    let tmInterval, tmRemaining = 0, tmTotal = 0, tmRunning = false, tmHasChimed = false;
+
+    document.getElementById('tm-start-btn').addEventListener('click', () => {
+        if (!tmRunning) {
+            if (tmRemaining <= 0) {
+                let h = parseInt(tmInpH.value) || 0; let m = parseInt(tmInpM.value) || 0; let s = parseInt(tmInpS.value) || 0;
+                tmRemaining = h * 3600 + m * 60 + s; tmTotal = tmRemaining;
+            }
+            if (tmRemaining > 0) {
+                tmRunning = true; tmHasChimed = false;
+                document.querySelector('#timer-view .timer-display').classList.remove('timer-complete');
+                tmInterval = setInterval(updateTimerMode, 1000);
+                chimeSound.volume = 0.8; chimeSound.play().then(() => chimeSound.pause()).catch(e => {});
+            }
+        }
+    });
+
+    document.getElementById('tm-pause-btn').addEventListener('click', () => { tmRunning = false; clearInterval(tmInterval); });
+
+    document.getElementById('tm-reset-btn').addEventListener('click', () => {
+        tmRunning = false; clearInterval(tmInterval); tmRemaining = 0;
+        updateTimerUI(0); progressBar.style.width = '0%';
+        document.querySelector('#timer-view .timer-display').classList.remove('timer-complete');
+    });
+
+    function updateTimerMode() {
+        if (!tmRunning) return;
+        tmRemaining--;
+        if (tmTotal > 0) { progressBar.style.width = `${Math.min(((tmTotal - tmRemaining) / tmTotal) * 100, 100)}%`; }
+        if (tmRemaining <= 0) {
+            tmRunning = false; clearInterval(tmInterval); updateTimerUI(0);
+            progressBar.style.width = '100%';
+            document.querySelector('#timer-view .timer-display').classList.add('timer-complete');
+            if (!tmHasChimed) {
+                chimeSound.currentTime = 0; chimeSound.volume = 1.0;
+                chimeSound.play().catch(e => {}); tmHasChimed = true;
+            }
+            return;
+        }
+        updateTimerUI(tmRemaining);
+    }
+
+    function updateTimerUI(totalSeconds) {
+        let h = Math.floor(totalSeconds / 3600); let m = Math.floor((totalSeconds % 3600) / 60); let s = totalSeconds % 60;
+        animateValue(tmEls.h, formatTime(h)); animateValue(tmEls.m, formatTime(m));
+        const oldS = tmEls.s.innerText; const newS = formatTime(s);
+        if (oldS !== newS) { animateValue(tmEls.s, newS); if(document.getElementById('timer-view').classList.contains('active-view')) playTick(); }
+    }
+
     // --- STOPWATCH LOGIC ---
     const swEls = { min: document.getElementById('sw-minutes'), sec: document.getElementById('sw-seconds'), ms: document.getElementById('sw-ms') };
     const swStartBtn = document.getElementById('sw-start-btn');

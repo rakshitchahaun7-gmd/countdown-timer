@@ -39,6 +39,7 @@
     <!-- Navigation Dock -->
     <div class="nav-dock">
         <button class="nav-btn active" data-target="countdown-view">Countdown</button>
+        <button class="nav-btn" data-target="timer-view">Timer</button>
         <button class="nav-btn" data-target="stopwatch-view">Stopwatch</button>
         <button class="nav-btn" data-target="clock-view">Clock</button>
         <button class="nav-btn" id="guide-btn">Guide</button>
@@ -94,6 +95,47 @@
                 <div class="button-group">
                     <button id="start-cd-btn" class="btn primary">Start</button>
                     <button id="fullscreen-btn" class="btn secondary">Fullscreen [F]</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIMER VIEW -->
+        <div class="view-layer" id="timer-view">
+            <div class="timer-display" id="tm-display">
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="tm-hours">00</span></div>
+                    <span class="label">Hours</span>
+                </div>
+                <div class="colon">:</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="tm-minutes">05</span></div>
+                    <span class="label">Minutes</span>
+                </div>
+                <div class="colon">:</div>
+                <div class="time-block">
+                    <div class="digit-container"><span class="number" id="tm-seconds">00</span></div>
+                    <span class="label">Seconds</span>
+                </div>
+            </div>
+            
+            <div id="tm-completion-message" class="completion-message">TIME IS UP</div>
+            <div class="ripple-overlay" id="tm-ripple"></div>
+
+            <div class="controls-panel">
+                <div class="input-section">
+                    <div class="input-group">
+                        <label>Set Timer:</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="number" id="tm-input-h" class="control-input" style="width:70px" placeholder="HH" min="0" max="99">
+                            <input type="number" id="tm-input-m" class="control-input" style="width:70px" placeholder="MM" min="0" max="59" value="5">
+                            <input type="number" id="tm-input-s" class="control-input" style="width:70px" placeholder="SS" min="0" max="59" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="tm-start-btn" class="btn primary">Start</button>
+                    <button id="tm-pause-btn" class="btn secondary">Pause</button>
+                    <button id="tm-reset-btn" class="btn secondary">Reset</button>
                 </div>
             </div>
         </div>
