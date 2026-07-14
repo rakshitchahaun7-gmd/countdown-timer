@@ -84,8 +84,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- URL PARSING & DEFAULT DATE ---
     const urlParams = new URLSearchParams(window.location.search);
     const isLaunchMode = urlParams.get('mode') === 'launch';
+    const isStreamMode = urlParams.get('mode') === 'stream';
 
-    if (isLaunchMode) {
+    if (isStreamMode) {
+        document.body.classList.add('stream-mode');
+        
+        const bgUrl = urlParams.get('bg');
+        if (bgUrl === 'green') {
+            document.body.style.backgroundColor = '#00FF00';
+            document.body.style.backgroundImage = 'none';
+        } else if (bgUrl) {
+            document.body.style.backgroundImage = `url("${bgUrl}")`;
+        }
+
+        const textColor = urlParams.get('color');
+        if (textColor && textColor !== 'default') {
+            document.documentElement.style.setProperty('--stream-color', textColor);
+        }
+
+        const streamTarget = parseInt(urlParams.get('time'));
+        if (streamTarget && !isNaN(streamTarget)) {
+            cdTarget = streamTarget;
+        } else {
+            cdTarget = Date.now() + 86400000;
+        }
+        startCountdown();
+    } else if (isLaunchMode) {
         document.body.classList.add('launch-mode');
         if (urlParams.get('theme')) document.body.className = urlParams.get('theme') + ' launch-mode';
         
@@ -326,6 +350,48 @@ document.addEventListener('DOMContentLoaded', () => {
         input.select();
         document.execCommand('copy');
         const btn = document.getElementById('lb-copy-btn');
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = 'Copy', 2000);
+    });
+
+    // --- STREAM BUILDER LOGIC ---
+    document.getElementById('so-generate-btn').addEventListener('click', () => {
+        const bgUrl = document.getElementById('so-bg-url').value.trim();
+        const isGreen = document.getElementById('so-green-screen').checked;
+        const color = document.getElementById('so-text-color').value;
+        
+        const inputVal = dateInput.value;
+        const tz = tzInput.value;
+        let targetTime = Date.now() + 86400000;
+        if (inputVal) {
+            if (tz === 'local') {
+                targetTime = new Date(inputVal).getTime();
+            } else {
+                targetTime = moment.tz(inputVal, tz).valueOf();
+            }
+        }
+        
+        const url = new URL(window.location.href);
+        url.searchParams.set('mode', 'stream');
+        if (isGreen) {
+            url.searchParams.set('bg', 'green');
+        } else if (bgUrl) {
+            url.searchParams.set('bg', bgUrl);
+        }
+        
+        if (color && color !== 'default') url.searchParams.set('color', color);
+        
+        url.searchParams.set('time', targetTime);
+        
+        document.getElementById('so-result-url').value = url.toString();
+        document.getElementById('so-result-group').style.display = 'block';
+    });
+
+    document.getElementById('so-copy-btn').addEventListener('click', () => {
+        const input = document.getElementById('so-result-url');
+        input.select();
+        document.execCommand('copy');
+        const btn = document.getElementById('so-copy-btn');
         btn.innerText = 'Copied!';
         setTimeout(() => btn.innerText = 'Copy', 2000);
     });

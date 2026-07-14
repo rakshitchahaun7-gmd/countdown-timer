@@ -304,3 +304,42 @@ body.launch-mode #countdown-view {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Stream Mode Overrides */
+body.stream-mode {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Hide all background meshes/gradients in stream mode if a custom BG is set */
+body.stream-mode::before,
+body.stream-mode::after {
+    display: none !important;
+}
+
+body.stream-mode .nav-dock,
+body.stream-mode .floating-menu,
+body.stream-mode .brand,
+body.stream-mode .controls-panel,
+body.stream-mode .progress-container,
+body.stream-mode .landing-header,
+body.stream-mode .landing-footer {
+    display: none !important;
+}
+
+body.stream-mode .fullscreen-container {
+    background: transparent !important;
+}
+
+body.stream-mode #countdown-view {
+    justify-content: center;
+}
+
+/* Timer text color override for stream mode */
+body.stream-mode .timer-display .number,
+body.stream-mode .timer-display .colon,
+body.stream-mode .timer-display .label {
+    color: var(--stream-color, var(--text-primary)) !important;
+    text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 0 40px var(--stream-color, transparent) !important;
+}
